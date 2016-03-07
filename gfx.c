@@ -68,6 +68,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	fprintf(stderr, "Writing image to stdout\n");
+	fwrite(img, sz, 1, stdout);
 
 	free(img);
 
