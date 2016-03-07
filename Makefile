@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: gfx
+all: rand
 
-gfx: gfx.c
-	colorgcc -Wall -Wextra -O2 gfx.c -o gfx
+rand: rand.c gfx.c
+	colorgcc -Wall -Wextra -O2 rand.c gfx.c -o rand
