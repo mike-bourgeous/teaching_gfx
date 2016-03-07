@@ -1,5 +1,5 @@
 /*
- * Uses teaching gfx primitives to draw a circle/ellipse.
+ * Uses teaching gfx primitives to draw a circle.
  * Mar. 7, 2016
  */
 #include <stdio.h>
@@ -11,6 +11,7 @@
 
 #include "gfx.h"
 
+// Draws a circle on the given image with the given image dimensions.
 void circle(uint8_t *img, int w, int h)
 {
 	float r = w < h ? w * 0.5f : h * 0.5f;
@@ -18,7 +19,7 @@ void circle(uint8_t *img, int w, int h)
 	float yc = 0.5f * h;
 	float t;
 
-	for(t = 0; t <= 2.0f * M_PI; t += 0.1 * M_PI) {
+	for(t = 0; t <= 2.0f * M_PI; t += 0.0001 * M_PI) {
 		int x = r * cosf(t) + xc;
 		int y = r * sinf(t) + yc;
 
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "Allocated image at %p\n", img);
 
 
-	fprintf(stderr, "Drawing a circle or ellipse\n");
+	fprintf(stderr, "Drawing a circle\n");
 	circle(img, w, h);
 
 	fprintf(stderr, "Writing image to stdout\n");
