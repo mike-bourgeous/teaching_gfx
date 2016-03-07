@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 // Returns the 1D location in an array of the 2D pixel at (x, y), with an image
 // of width w.
@@ -21,7 +22,7 @@ int size(int w, int h)
 
 int main(int argc, char *argv[])
 {
-	int8_t *img;
+	uint8_t *img;
 	int w, h;
 	int sz;
 	int x, y;
@@ -34,8 +35,22 @@ int main(int argc, char *argv[])
 	w = atoi(argv[1]);
 	h = atoi(argv[2]);
 	sz = size(w, h);
-	
+
 	fprintf(stderr, "Image size: %dx%d  Array size: %d\n", w, h, sz);
+
+	img = malloc(sz);
+	if(img == NULL) {
+		perror("Failed to allocate image");
+		return 2;
+	}
+
+	memset(img, 0, sz);
+
+	fprintf(stderr, "Allocated image at %p\n", img);
+
+	free(img);
+
+	fprintf(stderr, "Goodbye.\n");
 
 	return 0;
 }
