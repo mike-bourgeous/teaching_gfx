@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <time.h>
+
 
 // Returns the 1D location in an array of the 2D pixel at (x, y), with an image
 // of width w.
@@ -34,6 +36,7 @@ void setpx(uint8_t *img, int w, int x, int y, uint8_t c)
 
 int main(int argc, char *argv[])
 {
+	struct timespec now;
 	uint8_t *img;
 	int w, h;
 	int sz;
@@ -43,6 +46,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Usage: %s width height\n", argv[0]);
 		return 1;
 	}
+
+	// Seed the random number generator to get different results each time
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	srand((int)now.tv_sec ^ (int)now.tv_nsec);
 
 	w = atoi(argv[1]);
 	h = atoi(argv[2]);
