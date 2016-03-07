@@ -9,7 +9,7 @@
 
 // Returns the 1D location in an array of the 2D pixel at (x, y), with an image
 // of width w.
-int offset(int x, int y, int w)
+int offset(int w, int x, int y)
 {
 	return x + w * y;
 }
@@ -18,6 +18,18 @@ int offset(int x, int y, int w)
 int size(int w, int h)
 {
 	return w * h;
+}
+
+// Returns the color at the given coordinates in the given image.
+uint8_t getpx(uint8_t *img, int w, int x, int y)
+{
+	return img[offset(w, x, y)];
+}
+
+// Sets the color at the given coordinates in the given image.
+void setpx(uint8_t *img, int w, int x, int y, uint8_t c)
+{
+	img[offset(w, x, y)] = c;
 }
 
 int main(int argc, char *argv[])
@@ -47,6 +59,15 @@ int main(int argc, char *argv[])
 	memset(img, 0, sz);
 
 	fprintf(stderr, "Allocated image at %p\n", img);
+
+
+	fprintf(stderr, "Setting some pixels\n");
+	for(y = 0; y < h; y++) {
+		for(x = 0; x < w; x++) {
+			setpx(img, w, x, y, rand() % 255);
+		}
+	}
+
 
 	free(img);
 
