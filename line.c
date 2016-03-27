@@ -52,6 +52,17 @@ void line(uint8_t *img, int w, int h, int x1, int y1, int x2, int y2, uint8_t co
 		}
 	}
 
+	else if(abs(x2 - x1) >= abs(y2 - y1))
+	{
+		dy = (y2 - y1) / (x2 - x1); 
+
+		for(x = x1, y = y1; x <= x2; x++, y += dy)
+		{
+			setpx(img, w, x, y, color); 
+		}
+
+	}
+
 
 
 
@@ -92,8 +103,18 @@ int main(int argc, char *argv[])
 
 
 	fprintf(stderr, "Drawing some lines\n");
+	//Drawing cross lines
 	line(img, w, h, 0, h / 2, w - 1, h / 2, 128);
-	line(img, w, h, w / 2, 0, w / 2, h - 1, 255); 
+	line(img, w, h, w / 2, 0, w / 2, h - 1, 255);
+
+	//Test wide diagonals
+	line(img, w, h, 0, 0, w - 1, h / 2, 64);
+	line(img, w, h, 0, h - 1, w - 1, h / 2, 64);
+
+	//Test exact diagonals, 45 degrees
+	line(img, w, h, 0, 2, 30, 32, 80); 
+	line(img, w, h, 0, h - 1, 30, h - 31, 80); 
+	
 
 	fprintf(stderr, "Writing image to stdout\n");
 	fwrite(img, sz, 1, stdout);
