@@ -54,7 +54,7 @@ void line(uint8_t *img, int w, int h, int x1, int y1, int x2, int y2, uint8_t co
 
 	else if(abs(x2 - x1) >= abs(y2 - y1))
 	{
-		dy = (y2 - y1) / (x2 - x1); 
+		dy = (float)(y2 - y1) / (float)(x2 - x1); 
 
 		for(x = x1, y = y1; x <= x2; x++, y += dy)
 		{
