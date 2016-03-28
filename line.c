@@ -89,9 +89,10 @@ int main(int argc, char *argv[])
 	uint8_t *img;
 	int w, h;
 	int sz;
+	int num_lines;
 
-	if(argc != 3) {
-		fprintf(stderr, "Usage: %s width height\n", argv[0]);
+	if(argc != 4) {
+		fprintf(stderr, "Usage: %s width height num_lines\n", argv[0]);
 		return 1;
 	}
 
@@ -104,6 +105,9 @@ int main(int argc, char *argv[])
 	sz = size(w, h);
 
 	fprintf(stderr, "Image size: %dx%d  Array size: %d\n", w, h, sz);
+	
+	num_lines = atoi(argv[3]); 
+	fprintf(stderr, "Line Count: %d\n", num_lines); 
 
 	img = malloc(sz);
 	if(img == NULL) {
@@ -118,27 +122,40 @@ int main(int argc, char *argv[])
 
 	fprintf(stderr, "Drawing some lines\n");
 
+	//Random LINES!
+	for(int i = 0; i < num_lines; i++)
+	{
+		int x1, y1, x2, y2, color; 
+		x1 = rand() % w;
+		y1 = rand() % h; 
+		x2 = rand() % w; 
+		y2 = rand() % h; 
+		color = rand() % 50; 
+
+		line(img, w, h, x1, y1, x2, y2, color); 
+	}
+
 	//****Forward lines****
 	//Test horizontal/vertical lines
-	line(img, w, h, 0, h / 2, w - 1, h / 2, 128);
+	line(img, w, h, 0, h / 2, w - 1, h / 2, 148);
 	line(img, w, h, w / 2, 0, w / 2, h - 1, 255);
 
 	//Test wide diagonals
-	line(img, w, h, 0, 0, w - 1, h / 2, 64);
-	line(img, w, h, 0, h - 1, w - 1, h / 2, 64);
+	line(img, w, h, 0, 0, w - 1, h / 2, 164);
+	line(img, w, h, 0, h - 1, w - 1, h / 2, 164);
 
 	//Test exact diagonals, 45 degrees
-	line(img, w, h, 0, 2, 30, 32, 80); 
-	line(img, w, h, 0, h - 3, 30, h - 33, 80); 
+	line(img, w, h, 0, 2, 30, 32, 180); 
+	line(img, w, h, 0, h - 3, 30, h - 33, 180); 
 	
 	//Test tall diagonals
-	line(img, w, h, 0, 0, w / 2, h - 1, 45);
-	line(img, w, h, 0, h - 1, w / 2, 0, 45);
+	line(img, w, h, 0, 0, w / 2, h - 1, 145);
+	line(img, w, h, 0, h - 1, w / 2, 0, 145);
 
 	//****Backward lines***
 	//Test horizontal/vertical lines
 	line(img, w, h, w / 2, h / 4, 0, h / 4, 160);
-	line(img, w, h, w / 4, h / 2, w / 4, 0, 60);
+	line(img, w, h, w / 4, h / 2, w / 4, 0, 160);
 
 	//Test wide diagonals
 	line(img, w, h, w - 1, 0, 0, h / 2, 192);

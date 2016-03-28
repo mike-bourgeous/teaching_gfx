@@ -1,6 +1,6 @@
 .PHONY: all debug
 
-CFLAGS=-Wall -Wextra -g
+CFLAGS=-Wall -Wextra -g -std=c99 -D_XOPEN_SOURCE=700
 
 all: rand circle grad line
 
