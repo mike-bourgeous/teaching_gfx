@@ -117,7 +117,9 @@ int main(int argc, char *argv[])
 
 
 	fprintf(stderr, "Drawing some lines\n");
-	//Drawing cross lines
+
+	//****Forward lines****
+	//Test horizontal/vertical lines
 	line(img, w, h, 0, h / 2, w - 1, h / 2, 128);
 	line(img, w, h, w / 2, 0, w / 2, h - 1, 255);
 
@@ -127,11 +129,28 @@ int main(int argc, char *argv[])
 
 	//Test exact diagonals, 45 degrees
 	line(img, w, h, 0, 2, 30, 32, 80); 
-	line(img, w, h, 0, h - 1, 30, h - 31, 80); 
+	line(img, w, h, 0, h - 3, 30, h - 33, 80); 
 	
 	//Test tall diagonals
 	line(img, w, h, 0, 0, w / 2, h - 1, 45);
 	line(img, w, h, 0, h - 1, w / 2, 0, 45);
+
+	//****Backward lines***
+	//Test horizontal/vertical lines
+	line(img, w, h, w / 2, h / 4, 0, h / 4, 160);
+	line(img, w, h, w / 4, h / 2, w / 4, 0, 60);
+
+	//Test wide diagonals
+	line(img, w, h, w - 1, 0, 0, h / 2, 192);
+	line(img, w, h, w - 1, h - 1, 0, h / 2, 192);
+
+	//Test exact diagonals, 45 degrees
+	line(img, w, h, w - 1, 2, w - 31, 32, 140); 
+	line(img, w, h, w - 1, h - 3, w - 31, h - 33, 140); 
+	
+	//Test tall diagonals
+	line(img, w, h, w - 1, 0, w / 2, h - 1, 180);
+	line(img, w, h, w - 1, h - 1, w / 2, 0, 180);
 
 
 
