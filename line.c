@@ -18,9 +18,13 @@ void line(uint8_t *img, int w, int h, int x1, int y1, int x2, int y2, uint8_t co
 	float x, y;
 	float dx, dy;
 
-	//Always go left to right for horizontal lines and diagonals, top to
-	//bottom for vertical lines
-	if(x1 > x2 || (x1 == x2 && y1 > y2))
+	dx = fabs(x2 - x1); 
+	dy = fabs(y2 - y1); 
+
+
+	//Always go left to right for horizontal lines and wide diagonals, top to
+	//bottom for vertical lines and tall diagonals
+	if((x1 > x2 && dx > dy) || (dy >= dx && y1 > y2))
 	{
 		x = x1; 
 		y = y1; 
@@ -52,7 +56,7 @@ void line(uint8_t *img, int w, int h, int x1, int y1, int x2, int y2, uint8_t co
 		}
 	}
 
-	else if(abs(x2 - x1) >= abs(y2 - y1))
+	else if(dx > dy)
 	{
 		dy = (float)(y2 - y1) / (float)(x2 - x1); 
 
@@ -61,6 +65,16 @@ void line(uint8_t *img, int w, int h, int x1, int y1, int x2, int y2, uint8_t co
 			setpx(img, w, x, y, color); 
 		}
 
+	}
+
+	else
+	{
+		dx = (float)(x2 - x1) / (float)(y2 - y1);
+
+		for(x = x1, y = y1; y <= y2; y++, x += dx)
+		{
+			setpx(img, w, x, y, color);
+		}
 	}
 
 
@@ -115,6 +129,11 @@ int main(int argc, char *argv[])
 	line(img, w, h, 0, 2, 30, 32, 80); 
 	line(img, w, h, 0, h - 1, 30, h - 31, 80); 
 	
+	//Test tall diagonals
+	line(img, w, h, 0, 0, w / 2, h - 1, 45);
+	line(img, w, h, 0, h - 1, w / 2, 0, 45);
+
+
 
 	fprintf(stderr, "Writing image to stdout\n");
 	fwrite(img, sz, 1, stdout);
