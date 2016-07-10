@@ -60,9 +60,11 @@ int main(void)
 		uint8_t g = sin(i * M_PI / 93000.0) * 127 + 127;
 		uint8_t b = sin(i * M_PI / 120000.0) * 127 + 127;
 		set_pixel(screen, i % screen->w, i / screen->w, r, g, b);
+		if((i & 0xff) == 0) {
+			SDL_UpdateWindowSurface(win);
+		}
 	}
 	SDL_UpdateWindowSurface(win);
-	// TODO: do stuff here
 
 	// Wait for Enter to be pressed
 	do {
