@@ -10,7 +10,7 @@ debug:
 	$(CC) $(CFLAGS) -O0 circle.c gfx.c -o circle -lm
 	$(CC) $(CFLAGS) -O0 grad.c gfx.c -o grad
 	$(CC) $(CFLAGS) -O0 line.c gfx.c -o line
-	$(CC) $(CFLAGS) -O0 sdl_test.c -lSDL2 -o sdl_test
+	$(CC) $(CFLAGS) -O0 sdl_test.c -lSDL2 -lm -o sdl_test
 
 clean:
 	rm -f rand circle grad line sdl_test
@@ -28,4 +28,4 @@ line: line.c gfx.c Makefile
 	$(CC) $(CFLAGS) -O2 line.c gfx.c -o line
 
 sdl_test: sdl_test.c
-	$(CC) $(CFLAGS) -O2 sdl_test.c -lSDL2 -o sdl_test
+	$(CC) $(CFLAGS) -O2 sdl_test.c -lSDL2 -lm -o sdl_test
