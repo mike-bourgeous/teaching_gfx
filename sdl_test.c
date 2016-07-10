@@ -7,6 +7,7 @@
 int main(void)
 {
 	SDL_Window *win;
+	SDL_Surface *screen;
 	SDL_Event event;
 	int ret;
 
@@ -19,6 +20,24 @@ int main(void)
 	win = SDL_CreateWindow("Testing SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1024, 768, 0);
 	if(win == NULL) {
 		fprintf(stderr, "Error creating SDL window: %s\n", SDL_GetError());
+		return -1;
+	}
+
+	screen = SDL_GetWindowSurface(win);
+	if(screen == NULL) {
+		fprintf(stderr, "Error getting window drawing surface: %s\n", SDL_GetError());
+		return -1;
+	}
+
+	printf("Screen pixel format: 0x%x (%d bits per pixel)\n", screen->format->format, screen->format->BitsPerPixel);
+
+	// Clear the screen
+	if(SDL_FillRect(screen, NULL, SDL_MapRGBA(screen->format, 0, 0, 0, 255))) {
+		fprintf(stderr, "Error clearing the screen: %s\n", SDL_GetError());
+		return -1;
+	}
+	if(SDL_UpdateWindowSurface(win)) {
+		fprintf(stderr, "Error updating window surface after clearing: %s\n", SDL_GetError());
 		return -1;
 	}
 
