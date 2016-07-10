@@ -16,13 +16,23 @@ void set_pixel(SDL_Surface *dest, int x, int y, uint8_t r, uint8_t g, uint8_t b)
 	}
 }
 
+// Draws funky sinusoidal color patterns on the given surface.
+void draw_colors(SDL_Surface *dest, float r_omega, float r_phi, float g_omega, float g_phi, float b_omega, float b_phi)
+{
+	for(int i = 0; i < dest->w * dest->h; i++) {
+		uint8_t r = sinf(i * r_omega + r_phi) * 127 + 127;
+		uint8_t g = sinf(i * g_omega + g_phi) * 127 + 127;
+		uint8_t b = sinf(i * b_omega + b_phi) * 127 + 127;
+		set_pixel(dest, i % dest->w, i / dest->w, r, g, b);
+	}
+}
+
 int main(void)
 {
 	SDL_Window *win;
 	SDL_Surface *screen;
 	SDL_Event event;
 	int ret;
-	int i;
 
 	ret = SDL_Init(SDL_INIT_EVERYTHING);
 	if(ret) {
@@ -54,37 +64,36 @@ int main(void)
 		return -1;
 	}
 
-	// Write some pixels
-	for(i = 0; i < screen->w * screen->h; i++) {
-		uint8_t r = sin(i * M_PI / 128.0) * 127 + 127;
-		uint8_t g = sin(i * M_PI / 93000.0) * 127 + 127;
-		uint8_t b = sin(i * M_PI / 120000.0) * 127 + 127;
-		set_pixel(screen, i % screen->w, i / screen->w, r, g, b);
-		if((i & 0xff) == 0) {
-			SDL_UpdateWindowSurface(win);
-		}
-	}
-	SDL_UpdateWindowSurface(win);
-
-	// Wait for Enter to be pressed
+	// Make it funky
+	float phi = 0.0f;
+	int run = 1;
 	do {
-		if(!SDL_WaitEvent(&event)) {
-			fprintf(stderr, "Error waiting for an event: %s\n", SDL_GetError());
-			return -1;
-		}
+		float f = sin(100.0 * phi);
 
-		printf("Received an event: 0x%x\n", event.type);
+		draw_colors(screen,
+				M_PI / (128.0f + 0.25 * f), 110 * phi + 0.1 * f,
+				M_PI / (93000.0 - 1120 * f), phi * 170,
+				M_PI / (120000.0 + 55190 * f), phi * -80);
+		SDL_UpdateWindowSurface(win);
 
-		if(event.type == SDL_QUIT) {
-			printf("Quitting.\n");
-			break;
-		}
+		phi += 0.001f;
 
-		if(event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
-			printf("Enter pressed.  Exiting.\n");
-			break;
+		while(SDL_PollEvent(&event)) {
+			printf("Received an event: 0x%x\n", event.type);
+
+			if(event.type == SDL_QUIT) {
+				printf("Quitting.\n");
+				run = 0;
+				break;
+			}
+
+			if(event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+				printf("Enter pressed.  Exiting.\n");
+				run = 0;
+				break;
+			}
 		}
-	} while(1);
+	} while(run);
 
 	SDL_DestroyWindow(win);
 	SDL_Quit();
