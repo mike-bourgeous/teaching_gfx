@@ -47,6 +47,14 @@ struct point linear_spline(struct point c0, struct point c1, float t)
 	return interp_point(c0, c1, t);
 }
 
+// Returns a pseudorandom point within the range ( [0, w), [0, h) ).
+struct point random_point(int w, int h)
+{
+	return (struct point){
+		.x = rand() % w,
+		.y = rand() % h
+	};
+}
 
 // Sets a single pixel on the given surface to the given color.
 void set_pixel(SDL_Surface *dest, int x, int y, struct color clr)
@@ -110,21 +118,18 @@ int main(void)
 	// Make it funky
 	int run = 1;
 	do {
-		struct point c0 = {
-			.x = rand() % screen->w,
-			.y = rand() % screen->h
-		};
-		struct point c1 = {
-			.x = rand() % screen->w,
-			.y = rand() % screen->h
-		};
 		struct color clr = {
 			.r = rand() % 255,
 			.g = rand() % 255,
 			.b = rand() % 255
 		};
 
-		draw_linear_spline(screen, c0, c1, clr);
+		draw_linear_spline(
+				screen,
+				random_point(screen->w, screen->h),
+				random_point(screen->w, screen->h),
+				clr
+				);
 		SDL_UpdateWindowSurface(win);
 
 		while(SDL_PollEvent(&event)) {
