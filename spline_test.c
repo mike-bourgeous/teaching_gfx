@@ -1,33 +1,73 @@
 /*
- * A simple test of SDL.
+ * Learning to draw Bézier curves in the most brute-force way.
  */
 #include <stdio.h>
 #include <inttypes.h>
 #include <math.h>
 #include <SDL2/SDL.h>
 
-// Sets a single pixel on the given surface.
-void set_pixel(SDL_Surface *dest, int x, int y, uint8_t r, uint8_t g, uint8_t b)
+// A 2D point
+struct point {
+	float x;
+	float y;
+};
+
+// An RGB color with values from 0-255
+struct color {
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+};
+
+// function to draw curve
+// function to caculate point on curve
+//   control points
+//   color
+
+// Returns a value linearly interpolated between v1 and v2 by t.  t==0 returns
+// v1, t==1 returns v2.
+float interp(float v1, float v2, float t)
 {
-	uint32_t color = SDL_MapRGB(dest->format, r, g, b);
+	return (1 - t) * v1 + t * v2;
+}
+
+// Returns a 2D point linearly interpolated between p1 and p2 by t.
+struct point interp_point(struct point p1, struct point p2, float t)
+{
+	return (struct point){
+		.x = interp(p1.x, p2.x, t),
+		.y = interp(p1.y, p2.y, t),
+	};
+}
+
+// Returns a point on the linear spline with control points c0 and c1 at t from
+// 0 to 1.
+struct point linear_spline(struct point c0, struct point c1, float t)
+{
+	return interp_point(c0, c1, t);
+}
+
+
+// Sets a single pixel on the given surface to the given color.
+void set_pixel(SDL_Surface *dest, int x, int y, struct color clr)
+{
+	uint32_t color = SDL_MapRGB(dest->format, clr.r, clr.g, clr.b);
 	if(SDL_FillRect(dest, &(SDL_Rect){x: x, y: y, w: 1, h: 1}, color)) {
 		fprintf(stderr, "Error drawing a pixel: %s\n", SDL_GetError());
 		abort();
 	}
 }
 
-// Draws funky sinusoidal color patterns on the given surface.
-void draw_colors(SDL_Surface *dest, float r_omega, float r_phi, float g_omega, float g_phi, float b_omega, float b_phi)
+// Draws a linear spline with control points c0 and c1 on the given surface.
+void draw_linear_spline(SDL_Surface *dest, struct point c0, struct point c1, struct color clr)
 {
-  for(int y = 0; y < dest->h; y++) {
-    for(int x = y & 1; x < dest->w; x += 2) {
-      int i = x + y * dest->w;
-      uint8_t r = sinf(i * r_omega + r_phi) * 127 + 127;
-      uint8_t g = sinf(i * g_omega + g_phi) * 127 + 127;
-      uint8_t b = sinf(i * b_omega + b_phi) * 127 + 127;
-      set_pixel(dest, x, y, r, g, b);
-    }
-  }
+	struct point p;
+	float t;
+
+	for(t = 0; t <= 1; t += 0.001) {
+		p = linear_spline(c0, c1, t);
+		set_pixel(dest, p.x, p.y, clr);
+	}
 }
 
 int main(void)
@@ -68,18 +108,24 @@ int main(void)
 	}
 
 	// Make it funky
-	float phi = 0.0f;
 	int run = 1;
 	do {
-		float f = sin(100.0 * phi);
+		struct point c0 = {
+			.x = rand() % screen->w,
+			.y = rand() % screen->h
+		};
+		struct point c1 = {
+			.x = rand() % screen->w,
+			.y = rand() % screen->h
+		};
+		struct color clr = {
+			.r = rand() % 255,
+			.g = rand() % 255,
+			.b = rand() % 255
+		};
 
-		draw_colors(screen,
-				M_PI / (128.0f + 0.25 * f), 110 * phi + 0.1 * f,
-				M_PI / (93000.0 - 1120 * f), phi * 170,
-				M_PI / (120000.0 + 55190 * f), phi * -80);
+		draw_linear_spline(screen, c0, c1, clr);
 		SDL_UpdateWindowSurface(win);
-
-		phi += 0.001f;
 
 		while(SDL_PollEvent(&event)) {
 			printf("Received an event: 0x%x\n", event.type);
