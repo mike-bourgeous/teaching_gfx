@@ -47,6 +47,19 @@ struct point linear_spline(struct point c0, struct point c1, float t)
 	return interp_point(c0, c1, t);
 }
 
+// Returns a point on the quadratic spline with control points c0, c1, and c2
+// at t from 0 to 1.
+struct point quadratic_spline(struct point c0, struct point c1, struct point c2, float t)
+{
+	struct point interp1, interp2, interp3;
+
+	interp1 = interp_point(c0, c1, t);
+	interp2 = interp_point(c1, c2, t);
+	interp3 = interp_point(interp1, interp2, t);
+
+	return interp3;
+}
+
 // Returns a pseudorandom point within the range ( [0, w), [0, h) ).
 struct point random_point(int w, int h)
 {
@@ -74,6 +87,18 @@ void draw_linear_spline(SDL_Surface *dest, struct point c0, struct point c1, str
 
 	for(t = 0; t <= 1; t += 0.001) {
 		p = linear_spline(c0, c1, t);
+		set_pixel(dest, p.x, p.y, clr);
+	}
+}
+
+// Draws a quadratic spline with control points c0, c1, and c2 on the given surface.
+void draw_quadratic_spline(SDL_Surface *dest, struct point c0, struct point c1, struct point c2, struct color clr)
+{
+	struct point p;
+	float t;
+
+	for(t = 0; t <= 1; t += 0.001) {
+		p = quadratic_spline(c0, c1, c2, t);
 		set_pixel(dest, p.x, p.y, clr);
 	}
 }
@@ -124,8 +149,9 @@ int main(void)
 			.b = rand() % 255
 		};
 
-		draw_linear_spline(
+		draw_quadratic_spline(
 				screen,
+				random_point(screen->w, screen->h),
 				random_point(screen->w, screen->h),
 				random_point(screen->w, screen->h),
 				clr
