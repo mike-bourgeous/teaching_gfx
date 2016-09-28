@@ -3,7 +3,7 @@
 CFLAGS=-Wall -Wextra -g -std=c99 -D_XOPEN_SOURCE=700
 CC=gcc
 
-all: rand circle grad line sdl_test
+all: rand circle grad line sdl_test spline_test
 
 debug:
 	$(CC) $(CFLAGS) -O0 rand.c gfx.c -o rand
@@ -11,9 +11,10 @@ debug:
 	$(CC) $(CFLAGS) -O0 grad.c gfx.c -o grad
 	$(CC) $(CFLAGS) -O0 line.c gfx.c -o line
 	$(CC) $(CFLAGS) -O0 sdl_test.c -lSDL2 -lm -o sdl_test
+	$(CC) $(CFLAGS) -O0 spline_test.c -lSDL2 -lm -o spline_test
 
 clean:
-	rm -f rand circle grad line sdl_test
+	rm -f rand circle grad line sdl_test spline_test
 
 rand: rand.c gfx.c Makefile
 	$(CC) $(CFLAGS) -O2 rand.c gfx.c -o rand
@@ -27,5 +28,8 @@ grad: grad.c gfx.c Makefile
 line: line.c gfx.c Makefile
 	$(CC) $(CFLAGS) -O2 line.c gfx.c -o line
 
-sdl_test: sdl_test.c
+sdl_test: sdl_test.c Makefile
 	$(CC) $(CFLAGS) -O2 sdl_test.c -lSDL2 -lm -o sdl_test
+
+spline_test: spline_test.c Makefile
+	$(CC) $(CFLAGS) -O2 spline_test.c -lSDL2 -lm -o spline_test
